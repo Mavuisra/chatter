@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
+    <div class="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
+        <div>
+            <h1 class="text-center text-3xl font-extrabold text-green-600 dark:text-green-500">IGAF Chat</h1>
+            <h2 class="mt-6 text-center text-2xl font-bold text-gray-900 dark:text-white">
+                Créer un nouveau compte
+            </h2>
+        </div>
+        <form class="mt-8 space-y-6" method="post">
+            {% csrf_token %}
+            <div class="space-y-4">
+                <div>
+                    <label for="id_username" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Nom d'utilisateur
+                    </label>
+                    <input id="id_username" name="username" type="text" required 
+                           class="appearance-none relative block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white dark:bg-gray-700 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm" 
+                           placeholder="Choisissez un nom d'utilisateur">
+                </div>
+                <div class="mt-4">
+                    <label for="id_password1" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Mot de passe
+                    </label>
+                    <input id="id_password1" name="password1" type="password" required 
+                           class="appearance-none relative block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white dark:bg-gray-700 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm" 
+                           placeholder="Créez un mot de passe">
+                </div>
+                <div class="mt-4">
+                    <label for="id_password2" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Confirmer le mot de passe
+                    </label>
+                    <input id="id_password2" name="password2" type="password" required 
+                           class="appearance-none relative block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white dark:bg-gray-700 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm" 
+                           placeholder="Confirmez votre mot de passe">
+                </div>
+            </div>
+
+            {% if form.errors %}
+            <div class="mt-4 rounded-md bg-red-50 dark:bg-red-900 p-4">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                    <div class="text-sm text-red-700 dark:text-red-200">
+                        {{ error }}
+                    </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="mt-6">
+                <button type="submit" 
+                        class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                        <svg class="h-5 w-5 text-green-500 group-hover:text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6z" />
+                        </svg>
+                    </span>
+                    S'inscrire
+                </button>
+            </div>
+        </form>
+
+        <div class="mt-6 text-center">
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+                Déjà un compte?
+                <a href="{% url 'login' %}" class="font-medium text-green-600 hover:text-green-500">
+                    Se connecter
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %} 

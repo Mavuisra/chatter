@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+    <div class="conversations divide-y divide-gray-200 dark:divide-gray-700">
+        {% for conversation in conversations %}
+        <a href="{% url 'chat:conversation_detail' conversation.id %}" class="block hover:bg-gray-50 dark:hover:bg-gray-700">
+            <div class="px-4 py-4 sm:px-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="h-12 w-12 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                                {% for participant in conversation.participants.all %}
+                                    {% if participant != request.user %}
+                                        <span class="text-lg font-medium text-gray-700 dark:text-gray-200">
+                                            {{ participant.username|make_list|first|upper }}
+                                        </span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <div class="font-medium text-gray-900 dark:text-white">
+                                {% for participant in conversation.participants.all %}
+                                    {% if participant != request.user %}
+                                        {{ participant.username }}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">
+                                {% with last_message=conversation.messages.last %}
+                                    {% if last_message %}
+                                        {{ last_message.content|truncatechars:50 }}
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-xs text-gray-500 dark:text-gray-400">
+                        {% with last_message=conversation.messages.last %}
+                            {% if last_message %}
+                                {{ last_message.timestamp|date:"H:i" }}
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

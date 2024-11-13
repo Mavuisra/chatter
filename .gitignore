@@ -1,0 +1,28 @@
+# Environnements virtuels
+env/
+venv/
+
+# Clés et variables d'environnement
+.env
+
+# Base de données locale
+db.sqlite3
+
+# Cache
+**/__pycache__/
+**/*.py[cod]
+
+# Fichiers de log
+*.log
+
+# Fichiers statiques et média
+staticfiles/
+media/
+
+# Fichiers de l'éditeur
+.vscode/
+.idea/
+
+# Fichiers systèmes
+.DS_Store
+Thumbs.db
