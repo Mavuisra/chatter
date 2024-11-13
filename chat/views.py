@@ -11,6 +11,14 @@ import json
 
 @login_required
 def conversation_list(request):
+    """
+    Affiche la liste des conversations de l'utilisateur connecté.
+    
+    Cette vue:
+    1. Récupère toutes les conversations où l'utilisateur est participant
+    2. Récupère tous les contacts potentiels (autres utilisateurs)
+    3. Affiche la page principale avec la liste des conversations
+    """
     conversations = Conversation.objects.filter(participants=request.user)
     contacts = User.objects.exclude(id=request.user.id)
     return render(request, 'chat/conversation_list.html', {
@@ -20,10 +28,20 @@ def conversation_list(request):
 
 @login_required
 def conversation_detail(request, conversation_id):
+    """
+    Affiche le détail d'une conversation et ses messages.
+    
+    Paramètres:
+    - conversation_id: ID de la conversation à afficher
+    
+    Sécurité:
+    - Vérifie que l'utilisateur est bien participant de la conversation
+    - Filtre les messages avec fichiers manquants
+    """
     conversation = get_object_or_404(Conversation, id=conversation_id, participants=request.user)
     messages = conversation.messages.all()
     
-    # Filtrer les messages pour ne garder que ceux avec des fichiers valides
+    # Gestion des messages avec fichiers manquants
     for message in messages:
         if message.message_type == 'voice' and not message.voice:
             message.message_type = 'text'
@@ -39,6 +57,19 @@ def conversation_detail(request, conversation_id):
 
 @login_required
 def send_message(request, conversation_id):
+    """
+    Gère l'envoi des messages (texte, image, vocal).
+    
+    Méthode: POST uniquement
+    Types de messages supportés:
+    - text: message texte simple
+    - image: fichier image
+    - voice: message vocal
+    
+    Retourne:
+    - JSON avec statut 'success' et URLs des fichiers si nécessaire
+    - JSON avec statut 'error' en cas d'échec
+    """
     if request.method == 'POST':
         conversation = get_object_or_404(Conversation, id=conversation_id, participants=request.user)
         message_type = request.POST.get('message_type', 'text')
@@ -49,6 +80,7 @@ def send_message(request, conversation_id):
             'message_type': message_type
         }
 
+        # Gestion des différents types de messages
         if message_type == 'text':
             content = request.POST.get('content')
             if content:
@@ -90,16 +122,27 @@ def register(request):
 
 @login_required
 def start_conversation(request, user_id):
+    """
+    Démarre ou récupère une conversation avec un utilisateur.
+    
+    Logique:
+    1. Vérifie si une conversation existe déjà entre les deux utilisateurs
+    2. Si non, crée une nouvelle conversation
+    3. Redirige vers la conversation
+    
+    Paramètres:
+    - user_id: ID de l'utilisateur avec qui démarrer la conversation
+    """
     other_user = get_object_or_404(User, id=user_id)
     
-    # Vérifier si une conversation existe déjà
+    # Recherche d'une conversation existante
     conversation = Conversation.objects.filter(
         participants=request.user
     ).filter(
         participants=other_user
     ).first()
     
-    # Si aucune conversation n'existe, en créer une nouvelle
+    # Création d'une nouvelle conversation si nécessaire
     if not conversation:
         conversation = Conversation.objects.create()
         conversation.participants.add(request.user, other_user)

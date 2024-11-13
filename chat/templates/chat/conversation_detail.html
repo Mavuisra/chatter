@@ -58,7 +58,10 @@
                             </div>
                         {% elif message.message_type == 'image' and message.image %}
                             <div class="my-1">
-                                <img src="{{ message.image.url }}" alt="Image envoyée" class="max-w-full rounded-lg">
+                                <img src="{{ message.image.url }}" 
+                                     alt="Image envoyée" 
+                                     class="max-w-[200px] max-h-[200px] object-contain rounded-lg hover:scale-150 transition-transform cursor-pointer" 
+                                     onclick="window.open(this.src)">
                             </div>
                         {% endif %}
                         <div class="text-xs text-gray-500 dark:text-gray-400 text-right">
